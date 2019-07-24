@@ -1,8 +1,12 @@
 import React, { PureComponent } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
+import Modal from 'react-native-modal'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { connect } from 'react-redux'
+import { compose, withState } from 'recompose'
 import R from 'ramda'
+
+import Add from './add'
 
 import ReminderItem from './component/item'
 import ReminderHiddenItem, {
@@ -13,11 +17,8 @@ import styles from './style'
 @connect(({ reminder }) => ({
     list: R.pathOr([], ['data'])(reminder)
 }))
+@compose(withState('addVisible', 'setAddVisible', false))
 class List extends PureComponent {
-    static navigationOptions = {
-        title: '冰备宝'
-    }
-
     componentDidMount() {}
 
     handleHiddenItemPress = id => () => {
@@ -27,8 +28,12 @@ class List extends PureComponent {
         })
     }
 
+    toggleAddPress = () => {
+        this.props.setAddVisible(!this.props.addVisible)
+    }
+
     render() {
-        const { list } = this.props
+        const { list, addVisible } = this.props
         return (
             <View style={styles.container}>
                 <SwipeListView
@@ -39,8 +44,34 @@ class List extends PureComponent {
                             onPress={this.handleHiddenItemPress(item.id)}
                         />
                     )}
+                    ItemSeparatorComponent={() => (
+                        <View style={styles.separator} />
+                    )}
                     rightOpenValue={-hiddenItemWidth}
                 />
+                <View style={styles.bar.container}>
+                    <View style={{ opacity: 0 }}>
+                        <Text style={styles.bar.add}>+</Text>
+                    </View>
+                    <View style={{ flex: 1, alignItems: 'center' }}>
+                        <Text style={styles.bar.title}>
+                            备忘 ({R.length(list)})
+                        </Text>
+                    </View>
+                    <TouchableOpacity onPress={this.toggleAddPress}>
+                        <Text style={styles.bar.add}>+</Text>
+                    </TouchableOpacity>
+                </View>
+                <Modal
+                    style={styles.modal}
+                    avoidKeyboard
+                    useNativeDriver
+                    hideModalContentWhileAnimating
+                    isVisible={addVisible}
+                    onBackdropPress={this.toggleAddPress}
+                >
+                    <Add />
+                </Modal>
             </View>
         )
     }

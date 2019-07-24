@@ -7,8 +7,15 @@ import {
 import Landing from 'container/landing'
 import List from 'container/list'
 
+import { displayName } from '../app.json'
+
 const MainNavigator = createStackNavigator({
-    List
+    List: {
+        screen: List,
+        navigationOptions: {
+            title: displayName
+        }
+    }
 })
 
 const AppNavigator = createSwitchNavigator({
