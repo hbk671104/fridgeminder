@@ -3,12 +3,28 @@ import R from 'ramda'
 export default {
     namespace: 'reminder',
     state: {
-        data: {}
+        data: [
+            { id: '0', name: '鸡蛋', expired_at: 1111100 },
+            { id: '1', name: '牛奶', expired_at: 1020020 },
+            { id: '2', name: '酸奶', expired_at: 1020020 },
+            { id: '3', name: '牛腱子', expired_at: 1020020 },
+            { id: '4', name: '汤力水', expired_at: 1020020 }
+        ]
     },
     reducers: {
         save(state, { payload }) {
             return {
                 ...state
+            }
+        },
+        delete(state, { payload }) {
+            const targetId = R.path(['id'])(payload)
+            return {
+                ...state,
+                data: R.pipe(
+                    R.path(['data']),
+                    R.filter(i => i.id !== targetId)
+                )(state)
             }
         }
     },
