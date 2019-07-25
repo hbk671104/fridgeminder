@@ -44,12 +44,10 @@ class Add extends PureComponent {
         this.props.dispatch({
             type: 'reminder/add',
             payload: {
-                entry: {
-                    id: `username_${current}`,
-                    name,
-                    created_at: current,
-                    expired_at: moment(expiration).unix()
-                }
+                id: `username_${current}`,
+                name,
+                created_at: current,
+                expired_at: moment(expiration).unix()
             }
         })
         this.onCancelPress()
