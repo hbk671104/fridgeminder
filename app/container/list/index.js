@@ -41,13 +41,13 @@ class List extends PureComponent {
                     renderItem={({ item }) => <ReminderItem data={item} />}
                     renderHiddenItem={({ item }) => (
                         <ReminderHiddenItem
-                            onPress={this.handleHiddenItemPress(item.id)}
+                            onDeletePress={this.handleHiddenItemPress(item.id)}
                         />
                     )}
                     ItemSeparatorComponent={() => (
                         <View style={styles.separator} />
                     )}
-                    rightOpenValue={-hiddenItemWidth}
+                    rightOpenValue={-hiddenItemWidth * 2}
                 />
                 <View style={styles.bar.container}>
                     <View style={{ opacity: 0 }}>

@@ -3,6 +3,10 @@ import { AppRegistry, AsyncStorage } from 'react-native'
 import { create } from 'dva-core'
 import { Provider } from 'react-redux'
 import { autoRehydrate, persistStore } from 'redux-persist'
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+
+moment.locale('zh-cn')
 
 const dvaInit = options => {
     const app = create(options)

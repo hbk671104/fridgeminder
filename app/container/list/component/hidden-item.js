@@ -2,10 +2,16 @@ import React from 'react'
 import { View, Text, TouchableOpacity } from 'react-native'
 import { human, iOSColors } from 'react-native-typography'
 
-const hiddenItem = ({ onPress }) => (
+const hiddenItem = ({ onEditPress, onDeletePress }) => (
     <View style={styles.container}>
-        <TouchableOpacity style={styles.item.container} onPress={onPress}>
-            <Text style={styles.item.text}>删</Text>
+        <TouchableOpacity
+            style={[styles.item.container, { backgroundColor: iOSColors.blue }]}
+            onPress={onEditPress}
+        >
+            <Text style={styles.item.text}>编辑</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item.container} onPress={onDeletePress}>
+            <Text style={styles.item.text}>删除</Text>
         </TouchableOpacity>
     </View>
 )

@@ -20,12 +20,14 @@ class Add extends PureComponent {
         if (!name || !expiration) {
             return
         }
+        const current = moment().unix()
         this.props.dispatch({
             type: 'reminder/add',
             payload: {
                 entry: {
-                    id: `${moment().unix()}`,
+                    id: `username_${current}`,
                     name,
+                    created_at: current,
                     expired_at: moment(expiration).unix()
                 }
             }
