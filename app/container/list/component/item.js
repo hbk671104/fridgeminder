@@ -9,6 +9,15 @@ const item = ({ data, onPress }) => {
     const created_at = moment.unix(R.path(['created_at'])(data))
     const expired_at = moment.unix(R.path(['expired_at'])(data))
     const diff = expired_at.diff(created_at, 'days')
+
+    // proper format
+    const created_at_format = (created_at => {
+        if (moment(created_at).isSame(moment(), 'day')) {
+            return 'LT'
+        }
+        return 'L'
+    })()
+
     return (
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <Text style={human.title3Object}>{name}</Text>
@@ -41,12 +50,10 @@ const item = ({ data, onPress }) => {
             </View>
             <View style={styles.bottom.container}>
                 <Text style={styles.bottom.text}>
-                    {created_at.format('LL')}
+                    {created_at.format(created_at_format)}
                 </Text>
                 <View style={styles.bottom.connector} />
-                <Text style={styles.bottom.text}>
-                    {expired_at.format('LL')}
-                </Text>
+                <Text style={styles.bottom.text}>{expired_at.format('L')}</Text>
             </View>
         </TouchableOpacity>
     )
