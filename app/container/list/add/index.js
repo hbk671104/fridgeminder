@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View, Text, TextInput, Button } from 'react-native'
+import { View, Text, TextInput, Button, LayoutAnimation } from 'react-native'
 import { connect } from 'react-redux'
 import DatePicker from 'react-native-date-picker'
 import { compose, withState } from 'recompose'
@@ -9,17 +9,37 @@ import styles from './style'
 
 @connect()
 @compose(
-    withState('name', 'setName', ''),
-    withState('expiration', 'setExpiration', moment().toDate())
+    withState('name', 'setName', ({ item }) => {
+        if (item) {
+            return item.name
+        }
+        return null
+    }),
+    withState('expiration', 'setExpiration', ({ item }) => {
+        if (item) {
+            return moment.unix(item.expired_at).toDate()
+        }
+        return moment().toDate()
+    })
 )
 class Add extends PureComponent {
     onCancelPress = () => this.props.onCancelPress()
 
     onConfirmPress = () => {
-        const { name, expiration } = this.props
+        const { name, expiration, item } = this.props
         if (!name || !expiration) {
             return
         }
+
+        LayoutAnimation.easeInEaseOut()
+        // check if delete first
+        if (item) {
+            this.props.dispatch({
+                type: 'reminder/delete',
+                payload: { id: item.id }
+            })
+        }
+        // add
         const current = moment().unix()
         this.props.dispatch({
             type: 'reminder/add',

@@ -12,15 +12,17 @@ export default {
         marginLeft: 20
     },
     bar: {
+        wrapper: {
+            backgroundColor: iOSColors.white,
+            borderTopWidth: StyleSheet.hairlineWidth,
+            borderTopColor: iOSColors.midGray
+        },
         container: {
             height: 44,
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: getBottomSpace(),
             flexDirection: 'row',
             alignItems: 'center',
-            paddingHorizontal: 20
+            paddingHorizontal: 20,
+            marginBottom: getBottomSpace()
         },
         title: {
             ...human.footnoteObject

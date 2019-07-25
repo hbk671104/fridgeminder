@@ -1,16 +1,16 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import R from 'ramda'
 import { human, iOSColors } from 'react-native-typography'
 import moment from 'moment'
 
-const item = ({ data }) => {
+const item = ({ data, onPress }) => {
     const name = R.path(['name'])(data)
     const created_at = moment.unix(R.path(['created_at'])(data))
     const expired_at = moment.unix(R.path(['expired_at'])(data))
     const diff = expired_at.diff(created_at, 'days')
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={onPress}>
             <Text style={human.title3Object}>{name}</Text>
             <View style={styles.diff.container}>
                 <View>
@@ -48,7 +48,7 @@ const item = ({ data }) => {
                     {expired_at.format('LL')}
                 </Text>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

@@ -1,12 +1,18 @@
 import React from 'react'
-import { AppRegistry, AsyncStorage } from 'react-native'
+import { AppRegistry, AsyncStorage, UIManager, Platform } from 'react-native'
 import { create } from 'dva-core'
 import { Provider } from 'react-redux'
 import { autoRehydrate, persistStore } from 'redux-persist'
+import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 
 moment.locale('zh-cn')
+
+if (Platform.OS === 'android') {
+    UIManager.setLayoutAnimationEnabledExperimental &&
+        UIManager.setLayoutAnimationEnabledExperimental(true)
+}
 
 const dvaInit = options => {
     const app = create(options)
@@ -51,4 +57,10 @@ export const persist = callback => {
     )
 }
 
-AppRegistry.registerComponent(appName, () => app.start(<Router />))
+AppRegistry.registerComponent(appName, () =>
+    app.start(
+        <ActionSheetProvider>
+            <Router />
+        </ActionSheetProvider>
+    )
+)

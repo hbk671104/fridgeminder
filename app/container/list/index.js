@@ -1,64 +1,102 @@
 import React, { PureComponent } from 'react'
-import { View, Text, Button, TouchableOpacity } from 'react-native'
+import { View, Text, Button, FlatList, LayoutAnimation } from 'react-native'
 import Modal from 'react-native-modal'
-import { SwipeListView } from 'react-native-swipe-list-view'
 import { connect } from 'react-redux'
 import { compose, withState } from 'recompose'
+import { connectActionSheet } from '@expo/react-native-action-sheet'
 import R from 'ramda'
 
 import Add from './add'
 
 import ReminderItem from './component/item'
-import ReminderHiddenItem, {
-    itemWidth as hiddenItemWidth
-} from './component/hidden-item'
 import styles from './style'
 
 @connect(({ reminder }) => ({
     list: R.pathOr([], ['data'])(reminder)
 }))
-@compose(withState('addVisible', 'setAddVisible', false))
+@compose(
+    withState('addVisible', 'setAddVisible', false),
+    withState('editItem', 'setEditItem', null)
+)
+@connectActionSheet
 class List extends PureComponent {
     componentDidMount() {}
 
-    handleHiddenItemPress = id => () => {
+    handleItemPress = item => () => {
+        const options = ['编辑', '删除', '取消']
+        const destructiveButtonIndex = 1
+        const cancelButtonIndex = 2
+
+        this.props.showActionSheetWithOptions(
+            {
+                options,
+                cancelButtonIndex,
+                destructiveButtonIndex
+            },
+            buttonIndex => {
+                // Do something here depending on the button index selected
+                if (buttonIndex === 0) {
+                    this.handleEditItemPress(item)
+                } else if (buttonIndex === 1) {
+                    this.handleDeleteItemPress(item.id)
+                }
+            }
+        )
+    }
+
+    handleDeleteItemPress = id => {
+        LayoutAnimation.easeInEaseOut()
         this.props.dispatch({
             type: 'reminder/delete',
             payload: { id }
         })
     }
 
+    handleEditItemPress = item => {
+        this.props.setEditItem(item)
+        this.toggleAddPress()
+    }
+
     toggleAddPress = () => {
-        this.props.setAddVisible(!this.props.addVisible)
+        const { setAddVisible, addVisible, editItem, setEditItem } = this.props
+        // clean temp edit
+        if (addVisible && editItem) {
+            setEditItem(null)
+        }
+        setAddVisible(!addVisible)
     }
 
     render() {
-        const { list, addVisible } = this.props
+        const { list, addVisible, editItem } = this.props
         return (
             <View style={styles.container}>
-                <SwipeListView
+                <FlatList
                     data={list}
-                    renderItem={({ item }) => <ReminderItem data={item} />}
-                    renderHiddenItem={({ item }) => (
-                        <ReminderHiddenItem
-                            onDeletePress={this.handleHiddenItemPress(item.id)}
+                    renderItem={({ item }) => (
+                        <ReminderItem
+                            data={item}
+                            onPress={this.handleItemPress(item)}
                         />
                     )}
                     ItemSeparatorComponent={() => (
                         <View style={styles.separator} />
                     )}
-                    rightOpenValue={-hiddenItemWidth * 2}
                 />
-                <View style={styles.bar.container}>
-                    <View style={{ opacity: 0 }}>
-                        <Button title="添加+" onPress={this.toggleAddPress} />
+                <View style={styles.bar.wrapper}>
+                    <View style={styles.bar.container}>
+                        <View style={{ opacity: 0 }}>
+                            <Button
+                                title="添加"
+                                onPress={this.toggleAddPress}
+                            />
+                        </View>
+                        <View style={{ flex: 1, alignItems: 'center' }}>
+                            <Text style={styles.bar.title}>
+                                备忘 ({R.length(list)})
+                            </Text>
+                        </View>
+                        <Button title="添加" onPress={this.toggleAddPress} />
                     </View>
-                    <View style={{ flex: 1, alignItems: 'center' }}>
-                        <Text style={styles.bar.title}>
-                            备忘 ({R.length(list)})
-                        </Text>
-                    </View>
-                    <Button title="添加+" onPress={this.toggleAddPress} />
                 </View>
                 <Modal
                     style={styles.modal}
@@ -68,7 +106,7 @@ class List extends PureComponent {
                     isVisible={addVisible}
                     onBackdropPress={this.toggleAddPress}
                 >
-                    <Add onCancelPress={this.toggleAddPress} />
+                    <Add item={editItem} onCancelPress={this.toggleAddPress} />
                 </Modal>
             </View>
         )

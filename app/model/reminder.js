@@ -22,11 +22,6 @@ export default {
                 )(state)
             }
         },
-        save(state, { payload }) {
-            return {
-                ...state
-            }
-        },
         delete(state, { payload }) {
             const targetId = R.path(['id'])(payload)
             return {
