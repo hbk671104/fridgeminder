@@ -12,6 +12,16 @@ export default {
         ]
     },
     reducers: {
+        add(state, { payload }) {
+            const entry = R.path(['entry'])(payload)
+            return {
+                ...state,
+                data: R.pipe(
+                    R.path(['data']),
+                    R.prepend(entry)
+                )(state)
+            }
+        },
         save(state, { payload }) {
             return {
                 ...state

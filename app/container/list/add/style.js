@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native'
 import { human, iOSColors } from 'react-native-typography'
 
 export default {
@@ -15,5 +14,11 @@ export default {
         container: {
             marginTop: 12
         }
+    },
+    cancel: {
+        color: iOSColors.gray
+    },
+    bottom: {
+        flexDirection: 'row'
     }
 }

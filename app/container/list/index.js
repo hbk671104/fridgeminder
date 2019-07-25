@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, Button, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modal'
 import { SwipeListView } from 'react-native-swipe-list-view'
 import { connect } from 'react-redux'
@@ -51,16 +51,14 @@ class List extends PureComponent {
                 />
                 <View style={styles.bar.container}>
                     <View style={{ opacity: 0 }}>
-                        <Text style={styles.bar.add}>+</Text>
+                        <Button title="添加+" onPress={this.toggleAddPress} />
                     </View>
                     <View style={{ flex: 1, alignItems: 'center' }}>
                         <Text style={styles.bar.title}>
                             备忘 ({R.length(list)})
                         </Text>
                     </View>
-                    <TouchableOpacity onPress={this.toggleAddPress}>
-                        <Text style={styles.bar.add}>+</Text>
-                    </TouchableOpacity>
+                    <Button title="添加+" onPress={this.toggleAddPress} />
                 </View>
                 <Modal
                     style={styles.modal}
@@ -70,7 +68,7 @@ class List extends PureComponent {
                     isVisible={addVisible}
                     onBackdropPress={this.toggleAddPress}
                 >
-                    <Add />
+                    <Add onCancelPress={this.toggleAddPress} />
                 </Modal>
             </View>
         )
