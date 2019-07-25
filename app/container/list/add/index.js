@@ -82,6 +82,7 @@ class Add extends PureComponent {
                 <View style={{ marginTop: 12 }}>
                     <Text style={styles.title}>过期日期</Text>
                     <DatePicker
+                        style={{ marginTop: 12 }}
                         date={expiration}
                         minimumDate={moment().toDate()}
                         mode="date"
@@ -89,14 +90,14 @@ class Add extends PureComponent {
                     />
                 </View>
                 <View style={styles.bottom}>
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1, marginRight: 12 }}>
                         <Button
                             color={styles.cancel.color}
                             title="取消"
                             onPress={this.onCancelPress}
                         />
                     </View>
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex: 1, marginLeft: 12 }}>
                         <Button title="确定" onPress={this.onConfirmPress} />
                     </View>
                 </View>

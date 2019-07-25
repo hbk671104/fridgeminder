@@ -19,6 +19,7 @@ export default {
         color: iOSColors.gray
     },
     bottom: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginTop: 12
     }
 }
