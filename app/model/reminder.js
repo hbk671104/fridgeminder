@@ -34,7 +34,6 @@ export default {
                 // schedule local notification
                 PushNotification.localNotificationSchedule({
                     id,
-                    title: '过期提醒',
                     message: `「${name}」即将在3天之后过期`,
                     date: moment
                         .unix(expired_at)

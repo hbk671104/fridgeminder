@@ -1,9 +1,16 @@
 import React from 'react'
-import { AppRegistry, AsyncStorage, UIManager, Platform } from 'react-native'
+import {
+    AppRegistry,
+    AsyncStorage,
+    UIManager,
+    Platform,
+    PushNotificationIOS
+} from 'react-native'
 import { create } from 'dva-core'
 import { Provider } from 'react-redux'
 import { autoRehydrate, persistStore } from 'redux-persist'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
+import PushNotification from 'react-native-push-notification'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 
@@ -57,6 +64,12 @@ export const persist = callback => {
     )
 }
 
+PushNotification.configure({
+    onNotification: function(notification) {
+        // required on iOS only (see fetchCompletionHandler docs: https://facebook.github.io/react-native/docs/pushnotificationios.html)
+        notification.finish(PushNotificationIOS.FetchResult.NoData)
+    }
+})
 AppRegistry.registerComponent(appName, () =>
     app.start(
         <ActionSheetProvider>
