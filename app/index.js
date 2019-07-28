@@ -11,6 +11,7 @@ import { Provider } from 'react-redux'
 import { autoRehydrate, persistStore } from 'redux-persist'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import PushNotification from 'react-native-push-notification'
+import codePush from 'react-native-code-push'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
 
@@ -70,10 +71,16 @@ PushNotification.configure({
         notification.finish(PushNotificationIOS.FetchResult.NoData)
     }
 })
-AppRegistry.registerComponent(appName, () =>
-    app.start(
+AppRegistry.registerComponent(appName, () => {
+    const App = codePush({
+        deploymentKey:
+            Platform.OS === 'ios'
+                ? 'HqxeZ-vfz0ULKtMy5lvz-1JAHsc5VfLd30bLk'
+                : '5YU9j2ArBfWHOEcgyf-WEOY0aNRJMuMzZfD0W'
+    })(Router)
+    return app.start(
         <ActionSheetProvider>
-            <Router />
+            <App />
         </ActionSheetProvider>
     )
-)
+})
