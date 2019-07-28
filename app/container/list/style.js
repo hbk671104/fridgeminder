@@ -6,6 +6,17 @@ export default {
     container: {
         flex: 1
     },
+    empty: {
+        container: {
+            flex: 1,
+            alignItems: 'center',
+            marginTop: 240
+        },
+        text: {
+            ...human.calloutObject,
+            color: iOSColors.gray
+        }
+    },
     separator: {
         height: StyleSheet.hairlineWidth,
         backgroundColor: iOSColors.lightGray,
