@@ -1,0 +1,13 @@
+{
+  "miniprogramRoot": "./",
+  "projectname": "fridgeminder",
+  "description": "A fun app alerting you before fridge foods go real bad",
+  "appid": "touristappid",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram"
+}
