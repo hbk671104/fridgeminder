@@ -4,7 +4,7 @@
   "description": "A fun app alerting you before fridge foods go real bad",
   "appid": "wxef75af397d8db9cd",
   "setting": {
-    "urlCheck": true,
+    "urlCheck": false,
     "es6": false,
     "enhance": false,
     "postcss": false,
