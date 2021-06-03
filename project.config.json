@@ -2,9 +2,9 @@
   "miniprogramRoot": "dist/",
   "projectname": "fridgeminder",
   "description": "A fun app alerting you before fridge foods go real bad",
-  "appid": "wxef75af397d8db9cd",
+  "appid": "wx5da561632826ae6a",
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "es6": false,
     "enhance": false,
     "postcss": false,
