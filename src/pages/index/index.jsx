@@ -1,32 +1,50 @@
-import { Component } from 'react'
-import { View, Text } from '@tarojs/components'
-import { AtButton } from 'taro-ui'
+import { Component } from "react";
+import Taro from "@tarojs/taro";
+import { View, Text } from "@tarojs/components";
+import { AtFab } from "taro-ui";
+import AV from "leancloud-storage/dist/av-weapp.js";
 
-import "taro-ui/dist/style/components/button.scss" // 按需引入
-import './index.scss'
+import "taro-ui/dist/style/components/button.scss"; // 按需引入
+import "./index.scss";
 
 export default class Index extends Component {
+  state = {
+    items: []
+  };
 
-  componentWillMount () { }
+  componentWillMount() {}
 
-  componentDidMount () { }
+  componentDidMount() {}
 
-  componentWillUnmount () { }
+  componentWillUnmount() {}
 
-  componentDidShow () { }
+  componentDidShow() {
+    Taro.hideHomeButton();
+  }
 
-  componentDidHide () { }
+  componentDidHide() {}
 
-  render () {
+  onAddClick = e => {
+    e.stopPropagation();
+  };
+
+  render() {
+    const { items } = this.state;
     return (
-      <View className='index'>
-        <Text>Hello world!</Text>
-        <AtButton type='primary'>I need Taro UI</AtButton>
-        <Text>Taro UI 支持 Vue 了吗？</Text>
-        <AtButton type='primary' circle={true}>支持</AtButton>
-        <Text>共建？</Text>
-        <AtButton type='secondary' circle={true}>来</AtButton>
+      <View className="page index">
+        {items.length == 0 ? (
+          <View className="empty at-article__h3">
+            冰箱空空如也，点击右下角添加食品
+          </View>
+        ) : (
+          <View></View>
+        )}
+        <View className="add-button">
+          <AtFab onClick={this.onAddClick}>
+            <Text className="at-fab__icon at-icon at-icon-add" />
+          </AtFab>
+        </View>
       </View>
-    )
+    );
   }
 }
