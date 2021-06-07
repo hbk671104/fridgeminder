@@ -24,8 +24,7 @@ export default class Index extends Component {
 
   componentDidHide() {}
 
-  onAddClick = e => {
-    e.stopPropagation();
+  onAddClick = () => {
     Taro.navigateTo({ url: "../addItem/addItem" });
   };
 
