@@ -1,6 +1,8 @@
 import { Component } from "react";
+import Taro from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
 import { AtForm, AtInput, AtFab } from "taro-ui";
+import AV from "leancloud-storage/dist/av-weapp.js";
 
 import "taro-ui/dist/style/components/button.scss"; // 按需引入
 import "./addItem.scss";
@@ -21,9 +23,23 @@ export default class Additem extends Component {
 
   componentDidHide() {}
 
-  handleSubmit = () => {
+  handleSubmit = async () => {
     const { name, guarantee_period } = this.state;
-    console.log(name, guarantee_period);
+    const { objectId } = AV.User.current().toJSON();
+    const item = new AV.Object("Items");
+    item.set("userId", objectId);
+    item.set("name", name);
+    item.set("guarantee_period", guarantee_period);
+
+    Taro.showLoading({ title: "正在保存..." });
+    try {
+      await item.save();
+      Taro.navigateBack();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      Taro.hideLoading();
+    }
   };
 
   handleOnChange = key => value => {
