@@ -23,11 +23,11 @@ export default class Additem extends Component {
 
   componentDidHide() {}
 
-  handleSubmit = async () => {
+  saveItem = async () => {
     const { name, guarantee_period } = this.state;
-    const { objectId } = AV.User.current().toJSON();
+    const user = AV.User.current();
     const item = new AV.Object("Items");
-    item.set("userId", objectId);
+    item.set("user", user);
     item.set("name", name);
     item.set("guarantee_period", guarantee_period);
 
@@ -46,6 +46,10 @@ export default class Additem extends Component {
     this.setState({
       [key]: value
     });
+  };
+
+  handleSubmit = () => {
+    this.saveItem();
   };
 
   render() {
