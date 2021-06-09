@@ -1,15 +1,22 @@
 import { Component } from "react";
 import Taro from "@tarojs/taro";
 import { View, Text } from "@tarojs/components";
-import { AtFab, AtList, AtListItem } from "taro-ui";
+import {
+  AtFab,
+  AtList,
+  AtListItem,
+  AtActionSheet,
+  AtActionSheetItem
+} from "taro-ui";
 import AV from "leancloud-storage/dist/av-weapp.js";
+import dayjs from "dayjs";
 
-import "taro-ui/dist/style/components/button.scss"; // 按需引入
 import "./index.scss";
 
 export default class Index extends Component {
   state = {
-    items: []
+    items: [],
+    optionVisible: false
   };
 
   componentWillMount() {}
@@ -29,7 +36,7 @@ export default class Index extends Component {
     const user = AV.User.current();
     const query = new AV.Query("Items");
     query.equalTo("user", user);
-    query.descending("createdAt");
+    query.ascending("guarantee_period");
 
     Taro.showLoading({ title: "正在加载..." });
     try {
@@ -42,12 +49,23 @@ export default class Index extends Component {
     }
   };
 
+  toggleActionSheet = () => {
+    this.setState(prevState => ({
+      optionVisible: !prevState.optionVisible
+    }));
+  };
+
   onAddClick = () => {
     Taro.navigateTo({ url: "../addItem/addItem" });
   };
 
+  onItemClick = objectId => () => {
+    console.log(objectId);
+    this.toggleActionSheet();
+  };
+
   render() {
-    const { items } = this.state;
+    const { items, optionVisible } = this.state;
     return (
       <View className="page index">
         {items.length == 0 ? (
@@ -56,13 +74,25 @@ export default class Index extends Component {
           </View>
         ) : (
           <AtList>
-            {items.map(i => {
-              const item = i.toJSON();
+            {items.map((i, index) => {
+              const {
+                objectId,
+                name,
+                guarantee_period,
+                createdAt
+              } = i.toJSON();
+              const expired_at = dayjs(createdAt).add(guarantee_period, "day");
+              const isExpired = dayjs().isAfter(expired_at);
               return (
                 <AtListItem
-                  key={item.objectId}
-                  title={item.name}
-                  note={`${item.guarantee_period} 天后过期`}
+                  hasBorder={index !== items.length - 1}
+                  disabled={isExpired}
+                  key={objectId}
+                  title={name}
+                  extraText={
+                    isExpired ? "已过期" : `${expired_at.fromNow(true)}后过期`
+                  }
+                  onClick={this.onItemClick(objectId)}
                 />
               );
             })}
@@ -73,6 +103,14 @@ export default class Index extends Component {
             <Text className="at-fab__icon at-icon at-icon-add" />
           </AtFab>
         </View>
+        <AtActionSheet
+          isOpened={optionVisible}
+          cancelText="取消"
+          onClose={this.toggleActionSheet}
+        >
+          <AtActionSheetItem>编辑</AtActionSheetItem>
+          <AtActionSheetItem>删除</AtActionSheetItem>
+        </AtActionSheet>
       </View>
     );
   }
