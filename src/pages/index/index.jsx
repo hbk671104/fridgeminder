@@ -49,10 +49,14 @@ export default class Index extends Component {
     }
   };
 
-  toggleActionSheet = () => {
-    this.setState(prevState => ({
-      optionVisible: !prevState.optionVisible
-    }));
+  deleteItem = async id => {
+    const item = AV.Object.createWithoutData("Items", id);
+    try {
+      await item.destroy();
+      this.queryItems();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   onAddClick = () => {
@@ -60,8 +64,14 @@ export default class Index extends Component {
   };
 
   onItemClick = objectId => () => {
-    console.log(objectId);
-    this.toggleActionSheet();
+    this.tempItemId = objectId;
+    this.setState({ optionVisible: true });
+  };
+
+  onDeleteClick = () => {
+    this.setState({ optionVisible: false }, () =>
+      this.deleteItem(this.tempItemId)
+    );
   };
 
   render() {
@@ -105,11 +115,12 @@ export default class Index extends Component {
         </View>
         <AtActionSheet
           isOpened={optionVisible}
+          onClose={() => this.setState({ optionVisible: false })}
           cancelText="取消"
-          onClose={this.toggleActionSheet}
         >
-          <AtActionSheetItem>编辑</AtActionSheetItem>
-          <AtActionSheetItem>删除</AtActionSheetItem>
+          <AtActionSheetItem onClick={this.onDeleteClick}>
+            <Text style="color: red;">删除</Text>
+          </AtActionSheetItem>
         </AtActionSheet>
       </View>
     );
