@@ -49,6 +49,10 @@ export default class Additem extends Component {
   };
 
   handleSubmit = () => {
+    const { name, guarantee_period } = this.state;
+    if (!name || !guarantee_period) {
+      return;
+    }
     this.saveItem();
   };
 
