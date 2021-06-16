@@ -19,13 +19,15 @@ export default class Login extends Component {
 
   componentDidHide() {}
 
-  onGetUserInfo = async ({ detail }) => {
+  handleLogin = async () => {
     Taro.showLoading({ title: "正在登录..." });
     try {
+      const { userInfo } = await Taro.getUserProfile({
+        desc: "用于生成用户画像"
+      });
       let user = await AV.User.loginWithMiniApp();
 
       // set user info
-      const { userInfo } = detail;
       if (userInfo) {
         const { avatarUrl, nickName } = userInfo;
         user.set("avatarUrl", avatarUrl);
@@ -51,8 +53,7 @@ export default class Login extends Component {
         <AtButton
           className="login-button"
           type="primary"
-          openType="getUserInfo"
-          onGetUserInfo={this.onGetUserInfo}
+          onClick={this.handleLogin}
         >
           微信登录
         </AtButton>
