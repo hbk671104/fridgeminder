@@ -25,14 +25,14 @@ export default class Login extends Component {
       const { userInfo } = await Taro.getUserProfile({
         desc: "用于生成用户画像"
       });
-      let user = await AV.User.loginWithMiniApp();
+      const user = await AV.User.loginWithMiniApp();
 
       // set user info
       if (userInfo) {
         const { avatarUrl, nickName } = userInfo;
         user.set("avatarUrl", avatarUrl);
         user.set("nickName", nickName);
-        user = await user.save();
+        await user.save();
       }
 
       // jump to index page

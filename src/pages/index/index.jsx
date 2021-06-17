@@ -36,7 +36,7 @@ export default class Index extends Component {
     const user = AV.User.current();
     const query = new AV.Query("Items");
     query.equalTo("user", user);
-    query.ascending("guarantee_period");
+    query.ascending("shelf_life");
 
     Taro.showLoading({ title: "正在加载..." });
     try {
@@ -88,17 +88,18 @@ export default class Index extends Component {
               const {
                 objectId,
                 name,
-                guarantee_period,
+                shelf_life,
+                quantity,
                 createdAt
               } = i.toJSON();
-              const expired_at = dayjs(createdAt).add(guarantee_period, "day");
+              const expired_at = dayjs(createdAt).add(shelf_life, "day");
               const isExpired = dayjs().isAfter(expired_at);
               return (
                 <AtListItem
                   hasBorder={index !== items.length - 1}
                   disabled={isExpired}
                   key={objectId}
-                  title={name}
+                  title={`${name}（${quantity}）`}
                   extraText={
                     isExpired ? "已过期" : `${expired_at.fromNow(true)}后过期`
                   }

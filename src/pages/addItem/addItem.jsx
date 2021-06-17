@@ -10,7 +10,8 @@ import "./addItem.scss";
 export default class Additem extends Component {
   state = {
     name: null,
-    guarantee_period: null
+    quantity: null,
+    shelf_life: null
   };
 
   componentWillMount() {}
@@ -23,17 +24,38 @@ export default class Additem extends Component {
 
   componentDidHide() {}
 
-  saveItem = async () => {
-    const { name, guarantee_period } = this.state;
-    const user = AV.User.current();
-    const item = new AV.Object("Items");
-    item.set("user", user);
-    item.set("name", name);
-    item.set("guarantee_period", guarantee_period);
+  handleOnChange = key => value => {
+    this.setState({
+      [key]: value
+    });
+  };
+
+  handleSubmit = async () => {
+    const { name, quantity, shelf_life } = this.state;
+    if (!name || !shelf_life) {
+      return;
+    }
 
     Taro.showLoading({ title: "正在保存..." });
     try {
+      // set item properties
+      const user = AV.User.current();
+      const item = new AV.Object("Items");
+      item.set("user", user);
+      item.set("name", name);
+      if (quantity) {
+        item.set("quantity", parseInt(quantity, 10));
+      }
+      item.set("shelf_life", parseInt(shelf_life, 10));
+
       await item.save();
+
+      // add subscription
+      // const res = await Taro.requestSubscribeMessage({
+      //   tmplIds: ["xChbR4kkhzuSOe2jPqiEVvmF-Sv_46tnREWnyLvwWik"]
+      // });
+      // console.log(res);
+
       Taro.navigateBack();
     } catch (error) {
       console.error(error);
@@ -42,22 +64,8 @@ export default class Additem extends Component {
     }
   };
 
-  handleOnChange = key => value => {
-    this.setState({
-      [key]: value
-    });
-  };
-
-  handleSubmit = () => {
-    const { name, guarantee_period } = this.state;
-    if (!name || !guarantee_period) {
-      return;
-    }
-    this.saveItem();
-  };
-
   render() {
-    const { name, guarantee_period } = this.state;
+    const { name, quantity, shelf_life } = this.state;
     return (
       <View className="page addItem">
         <AtForm>
@@ -72,14 +80,22 @@ export default class Additem extends Component {
             onChange={this.handleOnChange("name")}
           />
           <AtInput
+            name="quantity"
+            title="数量"
+            type="number"
+            placeholder="请输入数量，默认为1"
+            value={quantity}
+            onChange={this.handleOnChange("quantity")}
+          />
+          <AtInput
             required
             border={false}
-            name="guarantee_period"
+            name="shelf_life"
             title="保质期"
             type="number"
             placeholder="请输入保质期"
-            value={guarantee_period}
-            onChange={this.handleOnChange("guarantee_period")}
+            value={shelf_life}
+            onChange={this.handleOnChange("shelf_life")}
           >
             <View className="at-article__h3">天</View>
           </AtInput>
